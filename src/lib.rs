@@ -1,7 +1,7 @@
 use std::ops::{Add, Sub, Mul, Neg};
 use num_traits::float::Float;
 
-#[derive(PartialEq, PartialOrd, Eq, Copy, Clone, Hash, Debug)]  
+#[derive(PartialEq, PartialOrd, Eq, Copy, Clone, Debug)]  
 pub struct Quaternion<T> {
     i: T,
     j: T,
