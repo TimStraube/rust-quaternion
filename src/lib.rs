@@ -26,7 +26,7 @@ impl<T: Copy + Sub<Output=T> + Neg<Output=T> + Add<Output=T> + Mul<Output=T>> Qu
             l: -self.l,
         }
     }
-    pub fn grassmanProduct(delta: Quaternion<T>, echo: Quaternion<T>) -> Quaternion<T> {
+    pub fn grassman_product(delta: Quaternion<T>, echo: Quaternion<T>) -> Quaternion<T> {
         Self {
             i: delta.i * echo.i - delta.j * echo.j - delta.k * echo.k - delta.l * echo.l,
             j: delta.i * echo.j + delta.j * echo.i + delta.k * echo.l - delta.l * echo.k,
@@ -34,8 +34,8 @@ impl<T: Copy + Sub<Output=T> + Neg<Output=T> + Add<Output=T> + Mul<Output=T>> Qu
             l: delta.i * echo.l + delta.j * echo.k - delta.k * echo.j + delta.l * echo.i,
         }
     }
-    pub fn crossProduct(delta: Quaternion<T>, echo: Quaternion<T>) -> Quaternion<T> where T: Float, f64: Into<T> {
-        (Quaternion::grassmanProduct(delta, echo) - Quaternion::grassmanProduct(echo, delta)) * 0.5.into()
+    pub fn cross_product(delta: Quaternion<T>, echo: Quaternion<T>) -> Quaternion<T> where T: Float, f64: Into<T> {
+        (Quaternion::grassman_product(delta, echo) - Quaternion::grassman_product(echo, delta)) * 0.5.into()
     }
 }
 
@@ -99,7 +99,7 @@ mod test {
         assert_eq!(q1 + q2, Quaternion::new(0.0, 0.0, 0.0, 0.0));
         assert_eq!(q1 - q2, Quaternion::new(2.0, 4.0, 6.0, 8.0));
         assert_eq!(q1.conj(), Quaternion::new(1.0, -2.0, -3.0, -4.0));
-        assert_eq!(Quaternion::grassmanProduct(q1, q2), q4);
+        assert_eq!(Quaternion::grassman_product(q1, q2), q4);
         assert_eq!(q1 * 1.0, q1);
     }
 }
