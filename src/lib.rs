@@ -1,5 +1,4 @@
 use std::ops::{Add, Sub, Mul, Neg};
-use num_traits::float::Float;
 
 #[derive(PartialEq, PartialOrd, Eq, Copy, Clone, Debug)]  
 pub struct Quaternion<T> {
@@ -9,7 +8,7 @@ pub struct Quaternion<T> {
     l: T,
 }
 
-impl<T: Copy + Sub<Output=T> + Neg<Output=T> + Add<Output=T> + Mul<Output=T>> Quaternion<T> {
+impl<T: Copy + Sub<Output=T> + Neg<Output=T> + Add<Output=T> + Mul<Output=T> + std::cmp::PartialEq> Quaternion<T> {
     pub fn new(alpha: T, beta: T, charlie: T, delta: T) -> Quaternion<T> {
         Self {
             i: alpha,
@@ -34,9 +33,30 @@ impl<T: Copy + Sub<Output=T> + Neg<Output=T> + Add<Output=T> + Mul<Output=T>> Qu
             l: delta.i * echo.l + delta.j * echo.k - delta.k * echo.j + delta.l * echo.i,
         }
     }
-    pub fn cross_product(delta: Quaternion<T>, echo: Quaternion<T>) -> Quaternion<T> where T: Float, f64: Into<T> {
-        (Quaternion::grassman_product(delta, echo) - Quaternion::grassman_product(echo, delta)) * 0.5.into()
+    pub fn cross_product(delta: Quaternion<T>, echo: Quaternion<T>) -> Quaternion<T> {
+        // can I use non generic values in generic implementation
+        let b = Quaternion::new(0.5, 0.0, 0.0, 0.0);
+        let q = Quaternion::grassman_product(delta, echo) - Quaternion::grassman_product(echo, delta);
+        Quaternion::grassman_product(b, q)
     }
+    pub fn real(&self) -> T {
+        return self.i;
+    }
+    pub fn imag(&self) -> Vec<T> {
+        let mut v: Vec<T> = Vec::new();
+        v.push(self.j);
+        v.push(self.k);
+        v.push(self.l);
+        return v;
+    }
+    pub fn exchangeable(&self, alpha: Quaternion<T>) -> bool {
+        let q = Quaternion::new(0, 0, 0, 0);
+        if Quaternion::cross_product(*self, alpha) == q {
+            return true;
+        } else {
+            return false;
+        }
+    } 
 }
 
 impl<T: Add<Output=T>> Add<Quaternion<T>> for Quaternion<T> {
@@ -63,36 +83,12 @@ impl<T: Sub<Output=T>> Sub<Quaternion<T>> for Quaternion<T> {
     }
 }
 
-impl<T: Clone + Mul<Output=T>> Mul<T> for Quaternion<T> {
-    type Output = Quaternion<T>;
-    fn mul(self, alpha: T) -> Quaternion<T> {
-        Self {
-            i: self.i * alpha.clone(),
-            j: self.j * alpha.clone(),
-            k: self.k * alpha.clone(),
-            l: self.l * alpha,
-        }
-    }
-}
-/*
-impl Mul<T> for Float {
-    type Output = Quaternion<T>;
-    fn mul(self, alpha: Quaternion<T>) -> Quaternion<T> {
-        Quaternion {
-            i: self.i * alpha.clone(),
-            j: self.j * alpha.clone(),
-            k: self.k * alpha.clone(),
-            l: self.l * alpha,
-        }
-    }
-}
-*/
 #[cfg(test)]
 mod test {
     use super::Quaternion;
 
     #[test]
-    fn test_new() {
+    fn test_basic_calculations() {
         let q1 = Quaternion::new(1.0, 2.0, 3.0, 4.0);
         let q2 = Quaternion::new(-1.0, -2.0, -3.0, -4.0);
         let q4 = Quaternion::new(28.0, -4.0, -6.0, -8.0);
@@ -100,7 +96,6 @@ mod test {
         assert_eq!(q1 - q2, Quaternion::new(2.0, 4.0, 6.0, 8.0));
         assert_eq!(q1.conj(), Quaternion::new(1.0, -2.0, -3.0, -4.0));
         assert_eq!(Quaternion::grassman_product(q1, q2), q4);
-        assert_eq!(q1 * 1.0, q1);
     }
 }
 
