@@ -62,13 +62,13 @@ impl Quaternion {
     pub fn unit(&self) -> Quaternion {
         Quaternion::divide_elementwise(self, self.abs())
     }
-    pub fn divide_elementwise(&self, alpha: f64) -> Quaternion {
-        let a = alpha.abs();
+    pub fn divide_elementwise(&self, div: f64) -> Quaternion {
+        let absdiv = div.abs();
         Self {
-            i: self.i / a,
-            j: self.j / a,
-            k: self.k / a,
-            l: self.l / a,
+            i: self.i / absdiv,
+            j: self.j / absdiv,
+            k: self.k / absdiv,
+            l: self.l / absdiv,
         }
     }
 }

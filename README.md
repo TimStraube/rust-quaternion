@@ -1,3 +1,3 @@
 # Rust-Quaternion
 
-Rust Quaternion Library written for learning purposes.
+Rust quaternion library with double precision floats written for learning purposes.
