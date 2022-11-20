@@ -1,2 +1,0 @@
-cargo:rustc-env=TYPENUM_BUILD_CONSTS=/home/tim/Programms/rust-quaternion/target/debug/build/typenum-1bc589258474b7aa/out/consts.rs
-cargo:rustc-env=TYPENUM_BUILD_OP=/home/tim/Programms/rust-quaternion/target/debug/build/typenum-1bc589258474b7aa/out/op.rs
